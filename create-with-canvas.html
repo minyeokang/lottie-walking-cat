@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캔버스로 로티쓰기</title>
+    <style>
+        body { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; } button { background: none; border: 0; cursor: pointer; } .lottie { position: absolute; z-index: -1; width: 100%; height: 100%; left: 0; } .container{width: 100%; height: 100%;} svg{width: 100px;}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="lottie" data-animation-path="test2.json" data-name="cat" data-anim-loop="true" data-anim-autoplay="false"></div>
+        <button class="paw"></button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.9/lottie.min.js"></script>
+
+    <script>
+
+        const catContainer = document.querySelector(".lottie")
+        const catPath = catContainer.getAttribute("data-animation-path");
+        console.log(catPath)
+
+        const catAnim = lottie.loadAnimation({
+            container: catContainer,
+            renderer: "svg",
+            //data-animation-path로 불러오는경우 스크립트보다 우선순위라 여기에 들어가는 속성을 data-speed 이런식으로 html에서 관리해야함, 굳이 canvas로 불러오고싶어서 이렇게 함 
+            // pathProps: {
+            //     width: "200px",
+            //     height: "200px"
+
+            // }
+
+            animationData: fetch(catPath).then(res => res.json()).default,
+            rendererSettings: {
+                scaleMode: "noScale",
+                clearCanvas: false,
+                progressiveLoad: true,
+                hideOnTransparent: true,
+            },
+           
+        });
+
+        const pawPath = 'https://assets2.lottiefiles.com/packages/lf20_ypqxhono.json';
+        const pawContainer = document.querySelector(".paw")
+        const pawAnim = lottie.loadAnimation({
+            container: pawContainer,
+            renderer: "svg",
+            loop: false,
+            autoplay: false,
+            path: pawPath
+        });
+
+        setTimeout(() => {
+            pawAnim.play()
+        }, 500) //or call when canvas is ready? 
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            console.log('DOM fully loaded and parsed');
+
+        });
+      
+
+        /*커서 자체도 눌러보세요를 누르면 발바닥모양으로 바뀜
+클릭했을때 로티 플레이 
+위치가 width / 2 보다 작으면 방향이 0 
+크면 방향이 -1  >> 이미지 자체도 transform 반대여야함
+*/
+    </script>
+</body>
+
+</html>

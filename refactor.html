@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lottie Tester</title>
+    <style>
+      .flex {
+        display: flex;
+        gap: 50px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #lottie-test {
+        width: 150px;
+        height: 150px;
+      }
+
+      button {
+        width: 50px;
+        height: 50px;
+      }
+
+      body {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="flex">
+      <div id="lottie-test"></div>
+      <button></button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.9/lottie.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@1/dist/lottie-player.js"></script>
+    <script>
+      const lottieContainer = document.getElementById("lottie-test");
+      const lottiePath = 'test2.json'
+      const button = document.querySelector("button");
+      const p = document.createElement("p");
+      let count = 0;
+
+      const lottieAnim = lottie.loadAnimation({
+        container: lottieContainer,
+        renderer: "svg",
+        loop: false,
+        autoplay: false,
+        path: lottiePath,
+      });
+
+      lottieAnim.stop();
+
+      lottieAnim.addEventListener("DOMLoaded", () => {
+        console.log("DOM loaded");
+        p.textContent = `Heart clicked ${count}`;
+        button.after(p);
+      });
+
+      button.addEventListener("click", () => {
+        count++;
+        p.textContent = `Heart clicked ${count}`;
+        lottieAnim.play();
+        lottieAnim.loop = true
+        button.after(p)
+            if(count >= 2){
+                lottieAnim.goToAndPlay(0, true);
+            }
+      });
+
+      lottieAnim.onLoopComplete = function () {
+            // lottieAnim.goToAndStop(45, true);
+        }
+
+    </script>
+  </body>
+</html>

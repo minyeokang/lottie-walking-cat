@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lottie tester</title>
+    <style> 
+        button { width: 50px; height: 50px; }
+        #lottie-test{width: 150px; height: 150px;}
+        body{width: 100vw; height: 100vh;display: flex; align-items: center; justify-content: center;}
+        .flex{display: flex; gap: 50px; align-items: center; justify-content: center;}
+    </style>
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.9/lottie.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@1/dist/lottie-player.js"></script>
+    <!-- <script src="https://unpkg.com/@lottiefiles/lottie-interactivity@latest/dist/lottie-interactivity.min.js"></script> //for scroll control-->
+        <!-- <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_Tj3A1GrIHf.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop controls autoplay></lottie-player> -->
+    <!-- 
+    <lottie-player src="cat.json"  background="black"  speed="1"  style="width: 1300px; height: 1300px;"  loop autoplay></lottie-player> //이렇게 사용하면 그냥 iframe이나 img에 gif처럼 사용
+    -->
+    <!-- <script>
+            LottieInteractivity.create({
+                player: "#firstLottie",
+                mode:"scroll",
+                actions: [
+                    {
+                        visibility:[0, 0.3],
+                        type: "stop",
+                        frames: [50]
+                    },
+                    {
+                        visibility: [0.3, 1.0],
+                        type: "seek",
+                        frames: [0, 440]
+                    }
+                ]
+            }); //interactivity 써서 조작
+        </script> -->
+        <div class="flex">
+            <div id="lottie-test"></div>
+            <button></button>
+        </div>
+
+    <script>
+
+        //default setting 
+        var lottieAnim = lottie.loadAnimation({
+            container: document.getElementById("lottie-test"), // --> 변수화 해서 재사용시키기 
+            renderer: 'svg',
+            loop: false,
+            autoplay: false,
+            path: 'https://assets5.lottiefiles.com/packages/lf20_Tj3A1GrIHf.json' // the path to the animation json
+        });
+
+        lottieAnim.stop();
+        lottieAnim.addEventListener('DOMLoaded',()=>{
+            console.log('dom loaded')
+            p.textContent = `heart clicked ${count}`
+            btn.after(p)
+        })
+        
+        
+        //lottieAnim.goToAndStop(0, false);  //프레임 숫자가 하트를 예로 들면 맨 처음 회색 하트는 0, 빨간색으로 변하는건 40 
+        //lottieAnim.playSegments([시작프레임, 끝프레임], 바로시작할거면true)로 프레임조절해서 어디서부터보여줄지도 컨트롤가능 
+        let count = 0;
+        const btn = document.querySelector('button')
+        const p = document.createElement('p')
+
+        //checking event
+        lottieAnim.data_ready = function () { //이렇게는 사용할 수 없음. config_ready도 마찬가지, 순서는 config 다음 data 
+            console.log(`data_ready: ${lottieAnim.playCount}`)
+        }
+        lottieAnim.onEnterFrame = function () {
+            console.log(`onEnterFrame: ${lottieAnim.playCount}`) //바로 불리고, 동작하는 동안 계속 불리고 마지막프레임도 불리기때문에 컴플릿 전에도 불림 
+        }
+        lottieAnim.onSegmentStart = function () { //segment = 분할, playSegments 사용해야 함 
+            console.log(`onSegmentStart: ${lottieAnim.playCount}`)
+        }
+        lottieAnim.addEventListener('data_ready',()=>{
+            console.log(`data_ready: ${lottieAnim.playCount}`)
+        })
+        lottieAnim.addEventListener('config_ready',()=>{
+            console.log(`config_ready: ${lottieAnim.playCount}`)
+        })
+        /* ----idea - 2회만 부르고 destroy 부르기 > 콘솔에서 lottieAnim. 해서 사용할 수 있는 이벤트 찾아서 playCount를 찾았음 ---- */
+        //state = 'play' 만들어서 이게 play 일때만 작동하면 지금 작성해둔게 어떻게 돌아가는지 체크해보기 
+        /*
+        if (state === 'play') {
+                animation.playSegments([14, 27], true);
+                state = 'pause';
+            } else {
+                animation.playSegments([0, 14], true);
+                state = 'play';
+            }
+        */
+        btn.addEventListener('click', function(){
+            count++;
+            lottieAnim.play();
+            lottieAnim.loop = true
+            // lottieAnim.playSegments((0,45), true);
+            p.textContent = `heart clicked ${count}`
+            lottieAnim.playCount++ //loop : true하면 카운터가 정상적으로 올라가긴 하는데 버튼 카운터와 플레이카운트가 다름 
+            btn.after(p)
+            if(count >= 2){
+                lottieAnim.goToAndPlay(0, true);
+            }
+        })
+
+        lottieAnim.onLoopComplete = function () {
+            lottieAnim.goToAndStop(45, true);
+        }
+       
+
+    </script>
+
+</body>
+
+</html>
